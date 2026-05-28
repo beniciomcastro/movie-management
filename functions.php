@@ -1,16 +1,19 @@
 <?php
 
+// Reads text typed by the user in the terminal
 function readText(string $message): string
 {
     echo $message;
     return trim(fgets(STDIN));
 }
 
+// Reads a required text input
 function readRequiredString(string $message): string
 {
     do {
         $value = readText($message);
 
+        // Checks if the user left the field empty
         if ($value === "") {
             echo "This field is required.\n";
         }
@@ -19,11 +22,13 @@ function readRequiredString(string $message): string
     return $value;
 }
 
+// Reads and validates an integer number
 function readInteger(string $message): int
 {
     do {
         $value = readText($message);
 
+        // Validates if the input is an integer
         if (!filter_var($value, FILTER_VALIDATE_INT)) {
             echo "Please enter a valid integer number.\n";
             continue;
@@ -33,6 +38,7 @@ function readInteger(string $message): int
     } while (true);
 }
 
+// Reads a yes/no answer and converts it to boolean
 function readBoolean(string $message): bool
 {
     do {
@@ -50,6 +56,7 @@ function readBoolean(string $message): bool
     } while (true);
 }
 
+// Registers a new movie and returns it as an associative array
 function registerMovie(int $id): array
 {
     echo "\n--- Register movie ---\n";
@@ -58,6 +65,7 @@ function registerMovie(int $id): array
     $year = readInteger("Release year: ");
     $rating = readInteger("Rating from 0 to 10: ");
 
+    // Ensures the rating is between 0 and 10
     while ($rating < 0 || $rating > 10) {
         echo "The rating must be between 0 and 10.\n";
         $rating = readInteger("Rating from 0 to 10: ");
@@ -76,6 +84,7 @@ function registerMovie(int $id): array
     ];
 }
 
+// Lists all movies sorted alphabetically by name
 function listMovies(array $movies): void
 {
     echo "\n--- Movie list ---\n";
@@ -85,6 +94,7 @@ function listMovies(array $movies): void
         return;
     }
 
+    // Sorts movies alphabetically, ignoring uppercase/lowercase differences
     usort($movies, function ($a, $b) {
         return strcasecmp($a["name"], $b["name"]);
     });
@@ -94,6 +104,7 @@ function listMovies(array $movies): void
     }
 }
 
+// Displays one movie on the screen
 function showMovie(array $movie): void
 {
     echo "\nID: " . $movie["id"] . "\n";
@@ -103,6 +114,7 @@ function showMovie(array $movie): void
     echo "Watched: " . ($movie["watched"] ? "Yes" : "No") . "\n";
 }
 
+// Searches movies by partial name, case-insensitive
 function searchMovies(array $movies): void
 {
     echo "\n--- Search movie ---\n";
@@ -111,6 +123,7 @@ function searchMovies(array $movies): void
     $foundMovies = [];
 
     foreach ($movies as $movie) {
+        // Checks if the search text exists inside the movie name
         if (str_contains(strtolower($movie["name"]), $search)) {
             $foundMovies[] = $movie;
         }
@@ -126,6 +139,7 @@ function searchMovies(array $movies): void
     }
 }
 
+// Edits a movie using its ID
 function editMovie(array &$movies): void
 {
     echo "\n--- Edit movie ---\n";
@@ -136,6 +150,7 @@ function editMovie(array &$movies): void
         if ($movie["id"] === $id) {
             showMovie($movie);
 
+            // If the user presses Enter, the current value is kept
             $newName = readText("New name, press Enter to keep current: ");
             if ($newName !== "") {
                 $movie["name"] = $newName;
@@ -178,6 +193,7 @@ function editMovie(array &$movies): void
     echo "Movie not found.\n";
 }
 
+// Removes a movie after user confirmation
 function removeMovie(array &$movies): void
 {
     echo "\n--- Remove movie ---\n";
@@ -192,7 +208,10 @@ function removeMovie(array &$movies): void
 
             if ($confirmation === "y") {
                 unset($movies[$index]);
+
+                // Reorganizes array indexes after removing an item
                 $movies = array_values($movies);
+
                 echo "Movie removed successfully.\n";
             } else {
                 echo "Deletion canceled.\n";
@@ -205,6 +224,7 @@ function removeMovie(array &$movies): void
     echo "Movie not found.\n";
 }
 
+// Shows calculated statistics based on registered movies
 function showStatistics(array $movies): void
 {
     echo "\n--- Statistics ---\n";
