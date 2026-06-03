@@ -1,4 +1,4 @@
-# Terminal-Based Management System - PHP
+# movie-management-System
 
 A terminal-based management system developed in pure PHP without frameworks.
 
